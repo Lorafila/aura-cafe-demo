@@ -1,0 +1,3292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Aura Cafe - Premium Coffee Experience in Berlin-Mitte">
+    <meta name="theme-color" content="#0a0a0a">
+    
+    <title>Aura Cafe | The Art of Perfect Coffee · Berlin-Mitte</title>
+    
+    <!-- Premium Typography: Playfair Display (Latin + Cyrillic) + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&subset=latin,latin-ext,cyrillic,cyrillic-ext&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           CSS CUSTOM PROPERTIES
+           ============================================ */
+        :root {
+            --color-bg-primary: #0a0a0a;
+            --color-bg-secondary: #111111;
+            --color-bg-tertiary: #1a1a1a;
+            --color-bg-elevated: #141414;
+            --color-text-primary: #f5f5f5;
+            --color-text-secondary: #a8a8a8;
+            --color-text-muted: #5a5a5a;
+            --color-accent: #c9a962;
+            --color-accent-hover: #d4b978;
+            --color-accent-dim: rgba(201, 169, 98, 0.15);
+            --color-border: rgba(255, 255, 255, 0.08);
+            --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+            --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
+            --shadow-premium: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+            --shadow-glow: 0 0 40px rgba(201, 169, 98, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+        }
+
+        /* Film Grain Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        }
+
+        /* ============================================
+           LOADING SCREEN
+           ============================================ */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--color-bg-primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
+            transition: opacity 0.8s var(--ease-smooth), visibility 0.8s var(--ease-smooth);
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader__logo {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            color: var(--color-text-primary);
+            font-style: italic;
+            animation: loaderPulse 1.5s var(--ease-smooth) infinite;
+        }
+
+        .loader__bar {
+            width: 200px;
+            height: 1px;
+            background: var(--color-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader__bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--color-accent);
+            animation: loaderProgress 1.5s var(--ease-in-out-quint) forwards;
+            transform-origin: left;
+        }
+
+        @keyframes loaderPulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes loaderProgress {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+
+        /* ============================================
+           SCROLL PROGRESS
+           ============================================ */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-accent-hover));
+            z-index: 9998;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px var(--color-accent);
+        }
+
+        /* ============================================
+           CUSTOM CURSOR (Desktop Only)
+           ============================================ */
+        .cursor-dot,
+        .cursor-ring {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9997;
+            border-radius: 50%;
+            transition: transform 0.15s var(--ease-smooth), opacity 0.3s var(--ease-smooth);
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-text-primary);
+            transform: translate(-50%, -50%);
+        }
+
+        .cursor-ring {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--color-text-primary);
+            transform: translate(-50%, -50%);
+            transition: transform 0.3s var(--ease-smooth), width 0.3s var(--ease-smooth), height 0.3s var(--ease-smooth);
+        }
+
+        .cursor-ring.hover {
+            width: 70px;
+            height: 70px;
+            border-color: var(--color-accent);
+            background: rgba(201, 169, 98, 0.05);
+        }
+
+        @media (hover: none), (pointer: coarse) {
+            .cursor-dot, .cursor-ring { display: none; }
+        }
+
+        /* ============================================
+           NAVIGATION
+           ============================================ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.75rem 3.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.5s var(--ease-smooth);
+        }
+
+        .nav.scrolled {
+            padding: 1.25rem 3.5rem;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .nav__logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--color-text-primary);
+            text-decoration: none;
+            font-style: italic;
+            transition: letter-spacing 0.4s var(--ease-smooth);
+            white-space: nowrap;
+        }
+
+        .nav__logo:hover {
+            letter-spacing: 0.2em;
+        }
+
+        .nav__logo::after {
+            content: '·';
+            margin-left: 0.25rem;
+            color: var(--color-accent);
+            font-size: 1.5rem;
+            vertical-align: middle;
+            font-style: normal;
+        }
+
+        .nav__center {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav__menu {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav__link {
+            font-family: var(--font-sans);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav__link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: var(--color-accent);
+            transition: all 0.4s var(--ease-out-expo);
+            transform: translateX(-50%);
+        }
+
+        .nav__link:hover {
+            color: var(--color-text-primary);
+        }
+
+        .nav__link:hover::before {
+            width: 100%;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0.5rem 0.875rem;
+            border: 1px solid var(--color-border);
+            border-radius: 100px;
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .lang-switcher__btn {
+            font-family: var(--font-sans);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--color-text-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem 0.625rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .lang-switcher__btn:not(:last-child)::after {
+            content: '·';
+            position: absolute;
+            right: -2px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-muted);
+            opacity: 0.4;
+        }
+
+        .lang-switcher__btn:hover {
+            color: var(--color-text-secondary);
+        }
+
+        .lang-switcher__btn.active {
+            color: var(--color-accent);
+        }
+
+        .nav__toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .nav__toggle span {
+            display: block;
+            width: 28px;
+            height: 1px;
+            background: var(--color-text-primary);
+            transition: all 0.4s var(--ease-smooth);
+            transform-origin: center;
+        }
+
+        .nav__toggle.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .nav__toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .nav__toggle.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 720px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero__background {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            transform: scale(1.05);
+            transition: transform 8s linear;
+        }
+
+        .hero.in-view .hero__background {
+            transform: scale(1);
+        }
+
+        .hero__background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.55) contrast(1.15) saturate(0.9);
+        }
+
+        .hero__overlay {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(10,10,10,0.4) 60%, rgba(10,10,10,0.95) 100%),
+                linear-gradient(180deg, rgba(10,10,10,0.3) 0%, transparent 30%, transparent 70%, rgba(10,10,10,0.95) 100%);
+        }
+
+        .hero__content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 1100px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero__label {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s var(--ease-out-expo) 0.3s forwards;
+        }
+
+        .hero__label::before,
+        .hero__label::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--color-accent);
+            opacity: 0.5;
+        }
+
+        .hero__title {
+            font-family: var(--font-serif);
+            font-size: clamp(3.5rem, 9vw, 7.5rem);
+            font-weight: 400;
+            line-height: 0.95;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            font-style: italic;
+        }
+
+        .hero__title .word {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top;
+            margin: 0 0.1em;
+        }
+
+        .hero__title .word span {
+            display: inline-block;
+            transform: translateY(110%);
+            animation: wordReveal 1.2s var(--ease-out-expo) forwards;
+        }
+
+        .hero__title .word:nth-child(1) span { animation-delay: 0.5s; }
+        .hero__title .word:nth-child(2) span { animation-delay: 0.65s; }
+        .hero__title .word:nth-child(3) span { animation-delay: 0.8s; }
+        .hero__title .word:nth-child(4) span { animation-delay: 0.95s; }
+
+        @keyframes wordReveal {
+            to { transform: translateY(0); }
+        }
+
+        .hero__subtitle {
+            font-family: var(--font-sans);
+            font-size: 1.0625rem;
+            font-weight: 300;
+            color: var(--color-text-secondary);
+            max-width: 540px;
+            margin: 0 auto 3.5rem;
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s var(--ease-out-expo) 1.2s forwards;
+        }
+
+        .hero__cta {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s var(--ease-out-expo) 1.5s forwards;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero__scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: var(--color-text-muted);
+            font-size: 0.6875rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 1s var(--ease-out-expo) 2s forwards;
+        }
+
+        .hero__scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, var(--color-accent), transparent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero__scroll-line::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: var(--color-text-primary);
+            animation: scrollLine 2s var(--ease-smooth) infinite;
+        }
+
+        @keyframes scrollLine {
+            0% { top: -50%; }
+            100% { top: 100%; }
+        }
+
+        /* ============================================
+           BUTTONS
+           ============================================ */
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 2.75rem;
+            background: var(--color-accent);
+            color: var(--color-bg-primary);
+            font-family: var(--font-sans);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--ease-smooth);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--color-accent-hover);
+            transform: translateX(-101%);
+            transition: transform 0.5s var(--ease-out-expo);
+        }
+
+        .btn-primary:hover::before {
+            transform: translateX(0);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-primary span,
+        .btn-primary svg {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary svg {
+            transition: transform 0.4s var(--ease-smooth);
+        }
+
+        .btn-primary:hover svg {
+            transform: translateX(4px);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.25rem 2.75rem;
+            background: transparent;
+            border: 1px solid var(--color-accent);
+            color: var(--color-accent);
+            font-family: var(--font-sans);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--ease-smooth);
+        }
+
+        .btn-outline::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--color-accent);
+            transform: translateY(101%);
+            transition: transform 0.5s var(--ease-out-expo);
+            z-index: 0;
+        }
+
+        .btn-outline:hover::before {
+            transform: translateY(0);
+        }
+
+        .btn-outline:hover {
+            color: var(--color-bg-primary);
+        }
+
+        .btn-outline span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-outline:active {
+            transform: scale(0.98);
+        }
+
+        /* ============================================
+           SECTION HEADERS
+           ============================================ */
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-label {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-label::before,
+        .section-label::after {
+            content: '';
+            width: 30px;
+            height: 1px;
+            background: var(--color-accent);
+            opacity: 0.5;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.05;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--color-accent);
+            font-weight: 400;
+        }
+
+        .section-subtitle {
+            font-family: var(--font-sans);
+            font-size: 1.0625rem;
+            font-weight: 300;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           3D PRODUCT SHOWCASE
+           ============================================ */
+        .product-showcase {
+            position: relative;
+            padding: 10rem 2rem;
+            background: var(--color-bg-secondary);
+            overflow: hidden;
+        }
+
+        .product-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+            opacity: 0.3;
+        }
+
+        .product-showcase__container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .product-showcase__title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 4.5vw, 4rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.01em;
+            font-style: italic;
+        }
+
+        .product-showcase__title em {
+            font-style: italic;
+            color: var(--color-accent);
+        }
+
+        .product-showcase__description {
+            font-family: var(--font-sans);
+            font-size: 1.0625rem;
+            color: var(--color-text-secondary);
+            line-height: 1.9;
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            font-weight: 300;
+        }
+
+        .product-showcase__features {
+            list-style: none;
+            margin-bottom: 3rem;
+        }
+
+        .product-showcase__feature {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--color-border);
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            color: var(--color-text-primary);
+            transition: padding 0.4s var(--ease-smooth);
+        }
+
+        .product-showcase__feature:hover {
+            padding-left: 0.5rem;
+        }
+
+        .product-showcase__feature-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--color-accent);
+            flex-shrink: 0;
+        }
+
+        /* 3D Tilt Card */
+        .product-showcase__visual {
+            position: relative;
+            perspective: 1500px;
+            height: 640px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-card {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 4/5;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.4s var(--ease-smooth);
+            cursor: pointer;
+            will-change: transform;
+        }
+
+        .product-card__image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.85) contrast(1.1) saturate(0.95);
+            transform: translateZ(0);
+            transition: transform 0.6s var(--ease-smooth);
+        }
+
+        .product-card:hover .product-card__image {
+            transform: scale(1.03);
+        }
+
+        .product-card__overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, transparent 40%, rgba(10,10,10,0.85) 100%),
+                radial-gradient(ellipse at 30% 20%, rgba(201, 169, 98, 0.1), transparent 60%);
+            pointer-events: none;
+        }
+
+        .product-card__glare {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            mix-blend-mode: overlay;
+        }
+
+        .product-card:hover .product-card__glare {
+            opacity: 1;
+        }
+
+        .product-card__content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2.5rem;
+            transform: translateZ(40px);
+        }
+
+        .product-card__badge {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            padding: 0.5rem 1.25rem;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--color-accent);
+            color: var(--color-accent);
+            font-family: var(--font-sans);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            border-radius: 50px;
+            transform: translateZ(50px);
+        }
+
+        .product-card__name {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-primary);
+            font-style: italic;
+        }
+
+        .product-card__origin {
+            font-family: var(--font-sans);
+            font-size: 0.8125rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+        }
+
+        /* ============================================
+           MENU SECTION - Premium Euro Pricing
+           ============================================ */
+        .menu-section {
+            padding: 10rem 2rem;
+            background: var(--color-bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-section::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--color-accent-dim) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .menu__container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .menu__categories {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .menu__category {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            background: none;
+            border: 1px solid var(--color-border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth);
+        }
+
+        .menu__category:hover {
+            color: var(--color-text-secondary);
+            border-color: var(--color-text-muted);
+        }
+
+        .menu__category.active {
+            color: var(--color-bg-primary);
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        .menu__grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .menu__item {
+            padding: 2.5rem 2rem;
+            border-bottom: 1px solid var(--color-border);
+            position: relative;
+            transition: background 0.4s var(--ease-smooth);
+            cursor: pointer;
+        }
+
+        .menu__item:nth-child(odd) {
+            border-right: 1px solid var(--color-border);
+        }
+
+        .menu__item:hover {
+            background: rgba(201, 169, 98, 0.03);
+        }
+
+        .menu__item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .menu__item-name {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            letter-spacing: -0.01em;
+            font-style: italic;
+        }
+
+        .menu__item-price {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-accent);
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        .menu__item-price .currency {
+            font-size: 0.8125rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        .menu__item-price .amount {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .menu__item-notes {
+            font-family: var(--font-sans);
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .menu__item-tag {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-accent-dim);
+            color: var(--color-accent);
+            font-family: var(--font-sans);
+            font-size: 0.625rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border-radius: 50px;
+        }
+
+        /* ============================================
+           BENTO GRID - BERLIN LOCATIONS
+           ============================================ */
+        .bento-section {
+            padding: 10rem 2rem;
+            background: var(--color-bg-secondary);
+            position: relative;
+        }
+
+        .bento-grid {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 260px;
+            gap: 1.25rem;
+        }
+
+        .bento-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--color-bg-tertiary);
+            cursor: pointer;
+            transition: transform 0.5s var(--ease-smooth);
+        }
+
+        .bento-item:hover {
+            transform: translateY(-6px);
+        }
+
+        .bento-item--large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .bento-item--wide {
+            grid-column: span 2;
+        }
+
+        .bento-item--tall {
+            grid-row: span 2;
+        }
+
+        .bento-item__image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s var(--ease-out-expo), filter 0.5s var(--ease-smooth);
+            filter: brightness(0.6) contrast(1.1) saturate(0.9);
+        }
+
+        .bento-item:hover .bento-item__image {
+            transform: scale(1.08);
+            filter: brightness(0.75) contrast(1.15) saturate(1);
+        }
+
+        .bento-item__overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, transparent 30%, rgba(10,10,10,0.95) 100%),
+                radial-gradient(ellipse at 50% 0%, transparent 0%, rgba(10,10,10,0.4) 100%);
+            pointer-events: none;
+            transition: background 0.5s var(--ease-smooth);
+        }
+
+        .bento-item__content {
+            position: absolute;
+            inset: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            z-index: 2;
+        }
+
+        .bento-item__location {
+            font-family: var(--font-sans);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bento-item__location::before {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: var(--color-accent);
+        }
+
+        .bento-item__title {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+            font-style: italic;
+        }
+
+        .bento-item--large .bento-item__title {
+            font-size: 2.5rem;
+        }
+
+        .bento-item__description {
+            font-family: var(--font-sans);
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.5s var(--ease-smooth);
+            max-width: 380px;
+            font-weight: 300;
+        }
+
+        .bento-item:hover .bento-item__description {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .bento-item__arrow {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-primary);
+            opacity: 0;
+            transform: translate(-10px, 10px);
+            transition: all 0.4s var(--ease-smooth);
+        }
+
+        .bento-item:hover .bento-item__arrow {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        /* Pulsing Berlin-Mitte Map Marker */
+        .bento-item__marker {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            width: 12px;
+            height: 12px;
+            z-index: 3;
+        }
+
+        .bento-item__marker-dot {
+            position: absolute;
+            inset: 0;
+            background: var(--color-accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--color-accent);
+        }
+
+        .bento-item__marker-pulse {
+            position: absolute;
+            inset: -8px;
+            border: 1.5px solid var(--color-accent);
+            border-radius: 50%;
+            animation: markerPulse 2.5s var(--ease-out-expo) infinite;
+        }
+
+        .bento-item__marker-pulse:nth-child(2) {
+            animation-delay: 0.8s;
+        }
+
+        @keyframes markerPulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* ============================================
+           BREWING PROCESS
+           ============================================ */
+        .brewing-section {
+            position: relative;
+            padding: 10rem 2rem;
+            overflow: hidden;
+        }
+
+        .brewing-section__background {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .brewing-section__background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.35) contrast(1.2) saturate(0.8);
+        }
+
+        .brewing-section__overlay {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at center, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0.92) 100%),
+                linear-gradient(180deg, rgba(10,10,10,0.8) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.95) 100%);
+        }
+
+        .brewing-section__container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .brewing-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 5rem;
+        }
+
+        .brewing-step {
+            position: relative;
+            padding: 3rem 2rem;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            transition: all 0.5s var(--ease-smooth);
+        }
+
+        .brewing-step:hover {
+            background: rgba(20, 20, 20, 0.8);
+            border-color: var(--color-accent-dim);
+            transform: translateY(-8px);
+        }
+
+        .brewing-step__number {
+            font-family: var(--font-serif);
+            font-size: 5rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--color-accent);
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            opacity: 0.6;
+            transition: opacity 0.4s var(--ease-smooth);
+        }
+
+        .brewing-step:hover .brewing-step__number {
+            opacity: 1;
+        }
+
+        .brewing-step__title {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
+            font-style: italic;
+        }
+
+        .brewing-step__description {
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* ============================================
+           TABLE RESERVATION
+           ============================================ */
+        .reservation-section {
+            padding: 10rem 2rem;
+            background: var(--color-bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reservation-section::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--color-accent-dim) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .reservation__container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .reservation__form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            padding: 3rem;
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group--full {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            display: block;
+            font-family: var(--font-sans);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        .form-group:focus-within .form-label {
+            color: var(--color-accent);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 1rem 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 400;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-bottom-color: var(--color-accent);
+        }
+
+        .form-input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .form-select {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1L6 6L11 1' stroke='%23c9a962' stroke-width='1.5'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 0 center;
+            padding-right: 1.5rem;
+        }
+
+        .form-select option {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .reservation__submit {
+            grid-column: span 2;
+            margin-top: 1rem;
+            justify-self: center;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            padding: 5rem 2rem 2rem;
+            background: var(--color-bg-secondary);
+            border-top: 1px solid var(--color-border);
+            position: relative;
+        }
+
+        .footer__container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .footer__top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 4rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .footer__brand {
+            max-width: 360px;
+        }
+
+        .footer__logo {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--color-text-primary);
+            margin-bottom: 1.5rem;
+            display: block;
+            font-style: italic;
+        }
+
+        .footer__logo::after {
+            content: '·';
+            margin-left: 0.25rem;
+            color: var(--color-accent);
+            font-style: normal;
+        }
+
+        .footer__tagline {
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .footer__column h4 {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer__column ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+
+        .footer__column a {
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 300;
+        }
+
+        .footer__column a:hover {
+            color: var(--color-text-primary);
+        }
+
+        .footer__bottom {
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer__copyright {
+            font-family: var(--font-sans);
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+            font-weight: 300;
+        }
+
+        .footer__social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer__social a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text-secondary);
+            transition: all 0.3s var(--ease-smooth);
+        }
+
+        .footer__social a:hover {
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           LANGUAGE TRANSITION
+           ============================================ */
+        .i18n-fade {
+            transition: opacity 0.3s var(--ease-smooth);
+        }
+
+        .i18n-fade.fading {
+            opacity: 0.3;
+        }
+
+        /* ============================================
+           SCROLL REVEAL ANIMATIONS
+           ============================================ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+        }
+
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-stagger > * {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+        }
+
+        .reveal-stagger.in-view > *:nth-child(1) { transition-delay: 0.1s; opacity: 1; transform: translateY(0); }
+        .reveal-stagger.in-view > *:nth-child(2) { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+        .reveal-stagger.in-view > *:nth-child(3) { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+        .reveal-stagger.in-view > *:nth-child(4) { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+        .reveal-stagger.in-view > *:nth-child(5) { transition-delay: 0.5s; opacity: 1; transform: translateY(0); }
+        .reveal-stagger.in-view > *:nth-child(6) { transition-delay: 0.6s; opacity: 1; transform: translateY(0); }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 1024px) {
+            .product-showcase__container {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .product-showcase__visual {
+                height: 500px;
+                order: -1;
+            }
+
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 240px;
+            }
+
+            .bento-item--large,
+            .bento-item--wide {
+                grid-column: span 2;
+            }
+
+            .bento-item--tall {
+                grid-row: span 1;
+            }
+
+            .brewing-steps {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .footer__top {
+                grid-template-columns: 1fr 1fr;
+                gap: 2.5rem;
+            }
+
+            .footer__brand {
+                grid-column: span 2;
+                max-width: 100%;
+            }
+
+            .menu__grid {
+                grid-template-columns: 1fr;
+            }
+
+            .menu__item:nth-child(odd) {
+                border-right: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1.25rem 1.5rem;
+            }
+
+            .nav.scrolled {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav__center {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                gap: 2.5rem;
+                transition: right 0.5s var(--ease-out-expo);
+            }
+
+            .nav__center.active {
+                right: 0;
+            }
+
+            .nav__menu {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .nav__toggle {
+                display: flex;
+            }
+
+            .nav__link {
+                font-size: 1.125rem;
+            }
+
+            .lang-switcher {
+                padding: 0.75rem 1.25rem;
+            }
+
+            .lang-switcher__btn {
+                font-size: 0.8125rem;
+                padding: 0.5rem 0.875rem;
+            }
+
+            .hero__title {
+                font-size: clamp(2.75rem, 10vw, 4rem);
+            }
+
+            .hero__subtitle {
+                font-size: 1rem;
+            }
+
+            .product-showcase,
+            .menu-section,
+            .bento-section,
+            .brewing-section,
+            .reservation-section {
+                padding: 6rem 1.5rem;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 280px;
+            }
+
+            .bento-item--large,
+            .bento-item--wide,
+            .bento-item--tall {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            /* Disable 3D tilt on mobile */
+            .product-card {
+                transform: none !important;
+                transition: transform 0.4s var(--ease-smooth) !important;
+            }
+
+            .product-card:active {
+                transform: scale(0.98) !important;
+            }
+
+            .reservation__form {
+                grid-template-columns: 1fr;
+                padding: 2rem 1.5rem;
+            }
+
+            .form-group--full,
+            .reservation__submit {
+                grid-column: span 1;
+            }
+
+            .footer__top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer__brand {
+                grid-column: span 1;
+            }
+
+            .footer__bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .menu__item-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero__title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .btn-primary,
+            .btn-outline {
+                padding: 1.125rem 2rem;
+                font-size: 0.75rem;
+                min-height: 52px;
+            }
+
+            .menu__item {
+                padding: 2rem 1.25rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .hero__title .word span {
+                transform: translateY(0);
+            }
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 3px;
+        }
+
+        ::selection {
+            background: var(--color-accent);
+            color: var(--color-bg-primary);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-bg-tertiary);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loader" id="loader" aria-hidden="true">
+        <div class="loader__logo">AURA CAFE</div>
+        <div class="loader__bar"></div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <!-- ============================================
+         NAVIGATION
+         ============================================ -->
+    <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+        <a href="#" class="nav__logo" aria-label="Aura Cafe Home">Aura Cafe</a>
+        
+        <div class="nav__center" id="navCenter">
+            <ul class="nav__menu">
+                <li><a href="#product" class="nav__link" data-i18n="nav.collection">Collection</a></li>
+                <li><a href="#menu" class="nav__link" data-i18n="nav.menu">Menu</a></li>
+                <li><a href="#locations" class="nav__link" data-i18n="nav.locations">Locations</a></li>
+                <li><a href="#brewing" class="nav__link" data-i18n="nav.process">Process</a></li>
+                <li><a href="#reservation" class="nav__link" data-i18n="nav.reserve">Reserve</a></li>
+            </ul>
+
+            <!-- Language Switcher -->
+            <div class="lang-switcher" role="group" aria-label="Language selector">
+                <button class="lang-switcher__btn" data-lang="de" aria-label="Deutsch">DE</button>
+                <button class="lang-switcher__btn active" data-lang="en" aria-label="English">EN</button>
+                <button class="lang-switcher__btn" data-lang="ru" aria-label="Русский">RU</button>
+            </div>
+        </div>
+
+        <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- ============================================
+         HERO SECTION
+         ============================================ -->
+    <section class="hero" id="hero" role="banner">
+        <div class="hero__background">
+            <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=1920&q=85" 
+                 alt="Moody cinematic coffee atmosphere" 
+                 loading="eager">
+        </div>
+        <div class="hero__overlay"></div>
+        
+        <div class="hero__content">
+            <span class="hero__label i18n-fade" data-i18n="hero.label">Est. 2027 · Berlin-Mitte</span>
+            <h1 class="hero__title" id="heroTitle"></h1>
+            <p class="hero__subtitle i18n-fade" data-i18n="hero.subtitle">
+                Where German precision meets artisanal craft. A sensory journey through 
+                single-origin beans, roasted in the heart of Berlin.
+            </p>
+            <div class="hero__cta">
+                <button class="btn-primary btn-sound" data-sound="click" data-i18n="hero.cta" data-scroll-target="menu" aria-label="Explore our collection">
+                    <span>Explore Collection</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="hero__scroll">
+            <span data-i18n="hero.scroll">Scroll</span>
+            <div class="hero__scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         3D PRODUCT SHOWCASE
+         ============================================ -->
+    <section class="product-showcase" id="product" aria-labelledby="product-title">
+        <div class="product-showcase__container">
+            <div class="product-showcase__content reveal">
+                <span class="section-label" data-i18n="product.label">Signature Series</span>
+                <h2 class="product-showcase__title" id="product-title" data-i18n-html="product.title">
+                    Crafted for<br><em>Connoisseurs</em>
+                </h2>
+                <p class="product-showcase__description i18n-fade" data-i18n="product.description">
+                    Each bean is meticulously selected from single-origin estates, 
+                    roasted in small batches, and brewed with precision that honors 
+                    both tradition and innovation.
+                </p>
+                
+                <ul class="product-showcase__features">
+                    <li class="product-showcase__feature">
+                        <svg class="product-showcase__feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                        <span data-i18n="product.feature1">Single-origin Ethiopian & Colombian beans</span>
+                    </li>
+                    <li class="product-showcase__feature">
+                        <svg class="product-showcase__feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        <span data-i18n="product.feature2">Small-batch roasted within 48 hours</span>
+                    </li>
+                    <li class="product-showcase__feature">
+                        <svg class="product-showcase__feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                        <span data-i18n="product.feature3">Sustainable & direct-trade certified</span>
+                    </li>
+                </ul>
+
+                <button class="btn-outline btn-sound" data-sound="click" data-i18n="product.cta" data-scroll-target="brewing">
+                    <span>Discover Process</span>
+                </button>
+            </div>
+
+            <div class="product-showcase__visual reveal" id="tiltContainer">
+                <div class="product-card" id="productCard" role="img" aria-label="Premium coffee showcase">
+                    <img 
+                        src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=85" 
+                        alt="Artisan coffee being poured into a ceramic cup with steam rising" 
+                        class="product-card__image"
+                        loading="lazy"
+                    >
+                    <div class="product-card__overlay"></div>
+                    <div class="product-card__glare" id="productGlare"></div>
+                    <span class="product-card__badge" data-i18n="product.badge">Limited Edition</span>
+                    <div class="product-card__content">
+                        <div class="product-card__origin" data-i18n="product.origin">Ethiopia · Yirgacheffe</div>
+                        <h3 class="product-card__name" data-i18n="product.name">Aura Reserve</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         MENU SECTION - Premium Euro Pricing
+         ============================================ -->
+    <section class="menu-section" id="menu" aria-labelledby="menu-title">
+        <div class="menu__container">
+            <div class="section-header reveal">
+                <span class="section-label" data-i18n="menu.label">The Menu</span>
+                <h2 class="section-title" id="menu-title" data-i18n-html="menu.title">Curated <em>Selection</em></h2>
+                <p class="section-subtitle" data-i18n="menu.subtitle">
+                    A refined collection of signature beverages and pastries, each crafted 
+                    to reveal the unique character of its origin.
+                </p>
+            </div>
+
+            <div class="menu__categories reveal" role="tablist">
+                <button class="menu__category active" data-category="signature" data-i18n="menu.cat.signature">Signature</button>
+                <button class="menu__category" data-category="coffee" data-i18n="menu.cat.coffee">Coffee</button>
+                <button class="menu__category" data-category="ceremony" data-i18n="menu.cat.ceremony">Ceremony</button>
+                <button class="menu__category" data-category="pastry" data-i18n="menu.cat.pastry">Pastry</button>
+            </div>
+
+            <div class="menu__grid reveal" id="menuGrid"></div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         BENTO GRID - BERLIN LOCATIONS
+         ============================================ -->
+    <section class="bento-section" id="locations" aria-labelledby="locations-title">
+        <div class="section-header reveal">
+            <span class="section-label" data-i18n="locations.label">Our Spaces</span>
+            <h2 class="section-title" id="locations-title" data-i18n-html="locations.title">Berlin-Mitte <em>Collection</em></h2>
+            <p class="section-subtitle" data-i18n="locations.subtitle">
+                Six carefully curated spaces across Berlin's most iconic neighborhoods. 
+                Each one a distinct expression of our craft.
+            </p>
+        </div>
+
+        <div class="bento-grid reveal-stagger" role="region" aria-label="Interactive map of Berlin locations">
+            <!-- Large Featured with Pulsing Marker -->
+            <article class="bento-item bento-item--large btn-sound" data-sound="click" tabindex="0" role="button" aria-label="Hauptstraße Flagship">
+                <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1000&q=85" 
+                     alt="Hauptstraße flagship café interior" 
+                     class="bento-item__image" loading="lazy">
+                <div class="bento-item__overlay"></div>
+                <div class="bento-item__marker" aria-hidden="true">
+                    <div class="bento-item__marker-pulse"></div>
+                    <div class="bento-item__marker-pulse"></div>
+                    <div class="bento-item__marker-dot"></div>
+                </div>
+                <div class="bento-item__content">
+                    <span class="bento-item__location" data-i18n="locations.flagship.label">Flagship</span>
+                    <h3 class="bento-item__title" data-i18n="locations.flagship.title">Hauptstraße</h3>
+                    <p class="bento-item__description" data-i18n="locations.flagship.description">Our original location featuring an open roastery and barista lab. The heart of Aura Cafe since 2027.</p>
+                </div>
+                <div class="bento-item__arrow" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </div>
+            </article>
+
+            <article class="bento-item btn-sound" data-sound="click" tabindex="0" role="button">
+                <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=85" 
+                     alt="Rosenthaler Platz café exterior at dusk" 
+                     class="bento-item__image" loading="lazy">
+                <div class="bento-item__overlay"></div>
+                <div class="bento-item__content">
+                    <span class="bento-item__location" data-i18n="locations.rosenthaler.label">Rosenthaler</span>
+                    <h3 class="bento-item__title" data-i18n="locations.rosenthaler.title">The Corner</h3>
+                    <p class="bento-item__description" data-i18n="locations.rosenthaler.description">Cozy neighborhood spot with outdoor seating.</p>
+                </div>
+                <div class="bento-item__arrow" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </div>
+            </article>
+
+            <article class="bento-item btn-sound" data-sound="click" tabindex="0" role="button">
+                <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=600&q=85" 
+                     alt="Hackescher Markt modern interior" 
+                     class="bento-item__image" loading="lazy">
+                <div class="bento-item__overlay"></div>
+                <div class="bento-item__content">
+                    <span class="bento-item__location" data-i18n="locations.hackescher.label">Hackescher</span>
+                    <h3 class="bento-item__title" data-i18n="locations.hackescher.title">The Lab</h3>
+                    <p class="bento-item__description" data-i18n="locations.hackescher.description">Experimental brewing methods & tasting room.</p>
+                </div>
+                <div class="bento-item__arrow" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </div>
+            </article>
+
+            <article class="bento-item bento-item--wide btn-sound" data-sound="click" tabindex="0" role="button">
+                <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1000&q=85" 
+                     alt="Museum Island location" 
+                     class="bento-item__image" loading="lazy">
+                <div class="bento-item__overlay"></div>
+                <div class="bento-item__content">
+                    <span class="bento-item__location" data-i18n="locations.museum.label">Museum Island</span>
+                    <h3 class="bento-item__title" data-i18n="locations.museum.title">Cultural Quarter</h3>
+                    <p class="bento-item__description" data-i18n="locations.museum.description">Pop-up location near the Pergamon Museum. Where art meets aroma.</p>
+                </div>
+                <div class="bento-item__arrow" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </div>
+            </article>
+
+            <article class="bento-item bento-item--tall btn-sound" data-sound="click" tabindex="0" role="button">
+                <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=600&q=85" 
+                     alt="Prenzlauer Berg café" 
+                     class="bento-item__image" loading="lazy">
+                <div class="bento-item__overlay"></div>
+                <div class="bento-item__content">
+                    <span class="bento-item__location" data-i18n="locations.prenzlauer.label">Prenzlauer Berg</span>
+                    <h3 class="bento-item__title" data-i18n="locations.prenzlauer.title">Morning Light</h3>
+                    <p class="bento-item__description" data-i18n="locations.prenzlauer.description">All-day breakfast & specialty coffee.</p>
+                </div>
+                <div class="bento-item__arrow" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </div>
+            </article>
+
+            <article class="bento-item btn-sound" data-sound="click" tabindex="0" role="button">
+                <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&q=85" 
+                     alt="Friedrichshain evening atmosphere" 
+                     class="bento-item__image" loading="lazy">
+                <div class="bento-item__overlay"></div>
+                <div class="bento-item__content">
+                    <span class="bento-item__location" data-i18n="locations.friedrichshain.label">Friedrichshain</span>
+                    <h3 class="bento-item__title" data-i18n="locations.friedrichshain.title">Evening Brew</h3>
+                    <p class="bento-item__description" data-i18n="locations.friedrichshain.description">Late-night coffee & wine bar.</p>
+                </div>
+                <div class="bento-item__arrow" aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- ============================================
+         BREWING PROCESS
+         ============================================ -->
+    <section class="brewing-section" id="brewing" aria-labelledby="brewing-title">
+        <div class="brewing-section__background">
+            <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&q=85" 
+                 alt="Coffee brewing process" 
+                 loading="lazy">
+        </div>
+        <div class="brewing-section__overlay"></div>
+        
+        <div class="brewing-section__container">
+            <div class="section-header reveal">
+                <span class="section-label" data-i18n="brewing.label">Our Method</span>
+                <h2 class="section-title" id="brewing-title" data-i18n-html="brewing.title">The Brewing <em>Process</em></h2>
+                <p class="section-subtitle" data-i18n="brewing.subtitle">
+                    Three acts of precision. From seed to cup, every moment is orchestrated 
+                    with the care of a symphony.
+                </p>
+            </div>
+            
+            <div class="brewing-steps reveal-stagger">
+                <article class="brewing-step">
+                    <div class="brewing-step__number">01</div>
+                    <h3 class="brewing-step__title" data-i18n="brewing.step1.title">Selection</h3>
+                    <p class="brewing-step__description" data-i18n="brewing.step1.description">
+                        Hand-picked beans from high-altitude estates, 
+                        sorted for perfection and traceability.
+                    </p>
+                </article>
+
+                <article class="brewing-step">
+                    <div class="brewing-step__number">02</div>
+                    <h3 class="brewing-step__title" data-i18n="brewing.step2.title">Roasting</h3>
+                    <p class="brewing-step__description" data-i18n="brewing.step2.description">
+                        Small-batch roasting in our Berlin facility, 
+                        profiled to highlight each origin's unique character.
+                    </p>
+                </article>
+
+                <article class="brewing-step">
+                    <div class="brewing-step__number">03</div>
+                    <h3 class="brewing-step__title" data-i18n="brewing.step3.title">Extraction</h3>
+                    <p class="brewing-step__description" data-i18n="brewing.step3.description">
+                        Precision brewing at 93°C, 9 bars of pressure, 
+                        25-30 second extraction for optimal flavor.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TABLE RESERVATION
+         ============================================ -->
+    <section class="reservation-section" id="reservation" aria-labelledby="reservation-title">
+        <div class="reservation__container">
+            <div class="section-header reveal">
+                <span class="section-label" data-i18n="reservation.label">Reserve Your Table</span>
+                <h2 class="section-title" id="reservation-title" data-i18n-html="reservation.title">An Evening <em>Awaits</em></h2>
+                <p class="section-subtitle" data-i18n="reservation.subtitle">
+                    Secure your place at our flagship location. Private tastings and 
+                    curated experiences available upon request.
+                </p>
+            </div>
+
+            <form class="reservation__form reveal" id="reservationForm" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="name" data-i18n="reservation.name">Full Name</label>
+                    <input type="text" id="name" class="form-input" data-i18n-placeholder="reservation.name.placeholder" placeholder="Your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email" data-i18n="reservation.email">Email</label>
+                    <input type="email" id="email" class="form-input" data-i18n-placeholder="reservation.email.placeholder" placeholder="your@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="date" data-i18n="reservation.date">Date</label>
+                    <input type="date" id="date" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="time" data-i18n="reservation.time">Time</label>
+                    <select id="time" class="form-select" required>
+                        <option value="" data-i18n="reservation.time.placeholder">Select time</option>
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="18:00">18:00</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:00">20:00</option>
+                    </select>
+                </div>
+
+                <div class="form-group form-group--full">
+                    <label class="form-label" for="guests" data-i18n="reservation.guests">Guests</label>
+                    <select id="guests" class="form-select" required>
+                        <option value="" data-i18n="reservation.guests.placeholder">Number of guests</option>
+                        <option value="1" data-i18n="reservation.guests.1">1 Guest</option>
+                        <option value="2" data-i18n="reservation.guests.2">2 Guests</option>
+                        <option value="3" data-i18n="reservation.guests.3">3 Guests</option>
+                        <option value="4" data-i18n="reservation.guests.4">4 Guests</option>
+                        <option value="5" data-i18n="reservation.guests.5">5 Guests</option>
+                        <option value="6" data-i18n="reservation.guests.6">6+ Guests</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary reservation__submit btn-sound" data-sound="click">
+                    <span data-i18n="reservation.submit">Confirm Reservation</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer__container">
+            <div class="footer__top">
+                <div class="footer__brand">
+                    <span class="footer__logo">Aura Cafe</span>
+                    <p class="footer__tagline" data-i18n="footer.tagline">
+                        The art of perfect coffee, crafted in the heart of Berlin-Mitte. 
+                        Where every cup tells a story.
+                    </p>
+                </div>
+
+                <div class="footer__column">
+                    <h4 data-i18n="footer.explore">Explore</h4>
+                    <ul>
+                        <li><a href="#product" data-i18n="nav.collection">Collection</a></li>
+                        <li><a href="#menu" data-i18n="nav.menu">Menu</a></li>
+                        <li><a href="#locations" data-i18n="nav.locations">Locations</a></li>
+                        <li><a href="#reservation" data-i18n="nav.reserve">Reserve</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__column">
+                    <h4 data-i18n="footer.visit">Visit</h4>
+                    <ul>
+                        <li><a href="#">Hauptstraße 42</a></li>
+                        <li><a href="#">10115 Berlin</a></li>
+                        <li><a href="#" data-i18n="footer.hours">Mon-Sun · 8-22h</a></li>
+                        <li><a href="#">+49 30 1234 5678</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__column">
+                    <h4 data-i18n="footer.legal">Legal</h4>
+                    <ul>
+                        <li><a href="#" data-i18n="footer.privacy">Privacy</a></li>
+                        <li><a href="#" data-i18n="footer.terms">Terms</a></li>
+                        <li><a href="#" data-i18n="footer.imprint">Imprint</a></li>
+                        <li><a href="#" data-i18n="footer.cookies">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer__bottom">
+                <p class="footer__copyright" data-i18n="footer.copyright">© 2027 Aura Cafe · Crafted in Berlin-Mitte</p>
+                <div class="footer__social">
+                    <a href="#" aria-label="Instagram">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="2" width="20" height="20" rx="5"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="Twitter">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="Facebook">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT
+         ============================================ -->
+    <script>
+        /**
+         * ==========================================
+         * TRANSLATIONS - DE / EN / RU
+         * Brand: Aura Cafe
+         * ==========================================
+         */
+        const translations = {
+            en: {
+                'nav.collection': 'Collection',
+                'nav.menu': 'Menu',
+                'nav.locations': 'Locations',
+                'nav.process': 'Process',
+                'nav.reserve': 'Reserve',
+                
+                'hero.label': 'Est. 2026 · Berlin-Mitte',
+                'hero.title': ['The', 'Art', 'of', '<em>Perfect</em>', 'Coffee'],
+                'hero.subtitle': 'Where German precision meets artisanal craft. A sensory journey through single-origin beans, roasted in the heart of Berlin.',
+                'hero.cta': 'Explore Collection',
+                'hero.scroll': 'Scroll',
+                
+                'product.label': 'Signature Series',
+                'product.title': 'Crafted for<br><em>Connoisseurs</em>',
+                'product.description': 'Each bean is meticulously selected from single-origin estates, roasted in small batches, and brewed with precision that honors both tradition and innovation.',
+                'product.feature1': 'Single-origin Ethiopian & Colombian beans',
+                'product.feature2': 'Small-batch roasted within 48 hours',
+                'product.feature3': 'Sustainable & direct-trade certified',
+                'product.cta': 'Discover Process',
+                'product.badge': 'Limited Edition',
+                'product.origin': 'Ethiopia · Yirgacheffe',
+                'product.name': 'Aura Reserve',
+                
+                'menu.label': 'The Menu',
+                'menu.title': 'Curated <em>Selection</em>',
+                'menu.subtitle': 'A refined collection of signature beverages and pastries, each crafted to reveal the unique character of its origin.',
+                'menu.cat.signature': 'Signature',
+                'menu.cat.coffee': 'Coffee',
+                'menu.cat.ceremony': 'Ceremony',
+                'menu.cat.pastry': 'Pastry',
+                
+                'locations.label': 'Our Spaces',
+                'locations.title': 'Berlin-Mitte <em>Collection</em>',
+                'locations.subtitle': 'Six carefully curated spaces across Berlin\'s most iconic neighborhoods. Each one a distinct expression of our craft.',
+                'locations.flagship.label': 'Flagship',
+                'locations.flagship.title': 'Hauptstraße',
+                'locations.flagship.description': 'Our original location featuring an open roastery and barista lab. The heart of Aura Cafe since 2027.',
+                'locations.rosenthaler.label': 'Rosenthaler',
+                'locations.rosenthaler.title': 'The Corner',
+                'locations.rosenthaler.description': 'Cozy neighborhood spot with outdoor seating.',
+                'locations.hackescher.label': 'Hackescher',
+                'locations.hackescher.title': 'The Lab',
+                'locations.hackescher.description': 'Experimental brewing methods & tasting room.',
+                'locations.museum.label': 'Museum Island',
+                'locations.museum.title': 'Cultural Quarter',
+                'locations.museum.description': 'Pop-up location near the Pergamon Museum. Where art meets aroma.',
+                'locations.prenzlauer.label': 'Prenzlauer Berg',
+                'locations.prenzlauer.title': 'Morning Light',
+                'locations.prenzlauer.description': 'All-day breakfast & specialty coffee.',
+                'locations.friedrichshain.label': 'Friedrichshain',
+                'locations.friedrichshain.title': 'Evening Brew',
+                'locations.friedrichshain.description': 'Late-night coffee & wine bar.',
+                
+                'brewing.label': 'Our Method',
+                'brewing.title': 'The Brewing <em>Process</em>',
+                'brewing.subtitle': 'Three acts of precision. From seed to cup, every moment is orchestrated with the care of a symphony.',
+                'brewing.step1.title': 'Selection',
+                'brewing.step1.description': 'Hand-picked beans from high-altitude estates, sorted for perfection and traceability.',
+                'brewing.step2.title': 'Roasting',
+                'brewing.step2.description': 'Small-batch roasting in our Berlin facility, profiled to highlight each origin\'s unique character.',
+                'brewing.step3.title': 'Extraction',
+                'brewing.step3.description': 'Precision brewing at 93°C, 9 bars of pressure, 25-30 second extraction for optimal flavor.',
+                
+                'reservation.label': 'Reserve Your Table',
+                'reservation.title': 'An Evening <em>Awaits</em>',
+                'reservation.subtitle': 'Secure your place at our flagship location. Private tastings and curated experiences available upon request.',
+                'reservation.name': 'Full Name',
+                'reservation.name.placeholder': 'Your name',
+                'reservation.email': 'Email',
+                'reservation.email.placeholder': 'your@email.com',
+                'reservation.date': 'Date',
+                'reservation.time': 'Time',
+                'reservation.time.placeholder': 'Select time',
+                'reservation.guests': 'Guests',
+                'reservation.guests.placeholder': 'Number of guests',
+                'reservation.guests.1': '1 Guest',
+                'reservation.guests.2': '2 Guests',
+                'reservation.guests.3': '3 Guests',
+                'reservation.guests.4': '4 Guests',
+                'reservation.guests.5': '5 Guests',
+                'reservation.guests.6': '6+ Guests',
+                'reservation.submit': 'Confirm Reservation',
+                'reservation.success': 'Reservation Confirmed ✓',
+                
+                'footer.tagline': 'The art of perfect coffee, crafted in the heart of Berlin-Mitte. Where every cup tells a story.',
+                'footer.explore': 'Explore',
+                'footer.visit': 'Visit',
+                'footer.hours': 'Mon-Sun · 8-22h',
+                'footer.legal': 'Legal',
+                'footer.privacy': 'Privacy',
+                'footer.terms': 'Terms',
+                'footer.imprint': 'Imprint',
+                'footer.cookies': 'Cookies',
+                'footer.copyright': '© 2027 Aura Cafe · Crafted in Berlin-Mitte'
+            },
+            
+            de: {
+                'nav.collection': 'Kollektion',
+                'nav.menu': 'Speisekarte',
+                'nav.locations': 'Standorte',
+                'nav.process': 'Prozess',
+                'nav.reserve': 'Reservieren',
+                
+                'hero.label': 'Gegr. 2026 · Berlin-Mitte',
+                'hero.title': ['Die', 'Kunst', 'des', '<em>perfekten</em>', 'Kaffees'],
+                'hero.subtitle': 'Wo deutsche Präzision auf handwerkliche Kunst trifft. Eine sinnliche Reise durch Single-Origin-Bohnen, geröstet im Herzen Berlins.',
+                'hero.cta': 'Kollektion entdecken',
+                'hero.scroll': 'Scrollen',
+                
+                'product.label': 'Signature-Serie',
+                'product.title': 'Kreiert für<br><em>Kenner</em>',
+                'product.description': 'Jede Bohne wird sorgfältig aus Single-Origin-Anbaugebieten ausgewählt, in kleinen Chargen geröstet und mit Präzision gebrüht, die Tradition und Innovation ehrt.',
+                'product.feature1': 'Single-Origin äthiopische & kolumbianische Bohnen',
+                'product.feature2': 'Kleincharge geröstet innerhalb von 48 Stunden',
+                'product.feature3': 'Nachhaltig & direkt gehandelt zertifiziert',
+                'product.cta': 'Prozess entdecken',
+                'product.badge': 'Limitierte Auflage',
+                'product.origin': 'Äthiopien · Yirgacheffe',
+                'product.name': 'Aura Reserve',
+                
+                'menu.label': 'Die Karte',
+                'menu.title': 'Kurierte <em>Auswahl</em>',
+                'menu.subtitle': 'Eine erlesene Sammlung signatur Getränke und Gebäck, jedes kreiert um den einzigartigen Charakter seiner Herkunft zu enthüllen.',
+                'menu.cat.signature': 'Signatur',
+                'menu.cat.coffee': 'Kaffee',
+                'menu.cat.ceremony': 'Zeremonie',
+                'menu.cat.pastry': 'Gebäck',
+                
+                'locations.label': 'Unsere Räume',
+                'locations.title': 'Berlin-Mitte <em>Kollektion</em>',
+                'locations.subtitle': 'Sechs sorgfältig kuratierte Räume in Berlins ikonischsten Vierteln. Jeder ein eigener Ausdruck unseres Handwerks.',
+                'locations.flagship.label': 'Flaggschiff',
+                'locations.flagship.title': 'Hauptstraße',
+                'locations.flagship.description': 'Unser Original-Standort mit offener Rösterei und Barista-Labor. Das Herz von Aura Cafe seit 2027.',
+                'locations.rosenthaler.label': 'Rosenthaler',
+                'locations.rosenthaler.title': 'The Corner',
+                'locations.rosenthaler.description': 'Gemütlicher Kiez-Treff mit Außenbestuhlung.',
+                'locations.hackescher.label': 'Hackescher',
+                'locations.hackescher.title': 'The Lab',
+                'locations.hackescher.description': 'Experimentelle Brühmethoden & Verkostungsraum.',
+                'locations.museum.label': 'Museumsinsel',
+                'locations.museum.title': 'Cultural Quarter',
+                'locations.museum.description': 'Pop-up in der Nähe des Pergamonmuseums. Wo Kunst auf Aroma trifft.',
+                'locations.prenzlauer.label': 'Prenzlauer Berg',
+                'locations.prenzlauer.title': 'Morning Light',
+                'locations.prenzlauer.description': 'Ganztags-Frühstück & Spezialitätenkaffee.',
+                'locations.friedrichshain.label': 'Friedrichshain',
+                'locations.friedrichshain.title': 'Evening Brew',
+                'locations.friedrichshain.description': 'Late-Night Kaffee & Weinbar.',
+                
+                'brewing.label': 'Unsere Methode',
+                'brewing.title': 'Der Brüh-<em>Prozess</em>',
+                'brewing.subtitle': 'Drei Akte der Präzision. Vom Samen bis zur Tasse wird jeder Moment mit der Sorgfalt einer Symphonie orchestriert.',
+                'brewing.step1.title': 'Auswahl',
+                'brewing.step1.description': 'Handverlesene Bohnen aus Hochland-Anbaugebieten, sortiert nach Perfektion und Rückverfolgbarkeit.',
+                'brewing.step2.title': 'Röstung',
+                'brewing.step2.description': 'Kleincharge-Röstung in unserer Berliner Manufaktur, profiliert um den einzigartigen Charakter jeder Herkunft hervorzuheben.',
+                'brewing.step3.title': 'Extraktion',
+                'brewing.step3.description': 'Präzisions-Brühung bei 93°C, 9 bar Druck, 25-30 Sekunden Extraktion für optimalen Geschmack.',
+                
+                'reservation.label': 'Tisch reservieren',
+                'reservation.title': 'Ein Abend <em>erwartet Sie</em>',
+                'reservation.subtitle': 'Sichern Sie sich Ihren Platz in unserem Flaggschiff. Private Verkostungen und kuratierte Erlebnisse auf Anfrage.',
+                'reservation.name': 'Vollständiger Name',
+                'reservation.name.placeholder': 'Ihr Name',
+                'reservation.email': 'E-Mail',
+                'reservation.email.placeholder': 'ihre@email.com',
+                'reservation.date': 'Datum',
+                'reservation.time': 'Uhrzeit',
+                'reservation.time.placeholder': 'Uhrzeit wählen',
+                'reservation.guests': 'Gäste',
+                'reservation.guests.placeholder': 'Anzahl der Gäste',
+                'reservation.guests.1': '1 Gast',
+                'reservation.guests.2': '2 Gäste',
+                'reservation.guests.3': '3 Gäste',
+                'reservation.guests.4': '4 Gäste',
+                'reservation.guests.5': '5 Gäste',
+                'reservation.guests.6': '6+ Gäste',
+                'reservation.submit': 'Reservierung bestätigen',
+                'reservation.success': 'Reservierung bestätigt ✓',
+                
+                'footer.tagline': 'Die Kunst des perfekten Kaffees, kreiert im Herzen von Berlin-Mitte. Wo jede Tasse eine Geschichte erzählt.',
+                'footer.explore': 'Entdecken',
+                'footer.visit': 'Besuchen',
+                'footer.hours': 'Mo-So · 8-22 Uhr',
+                'footer.legal': 'Rechtliches',
+                'footer.privacy': 'Datenschutz',
+                'footer.terms': 'AGB',
+                'footer.imprint': 'Impressum',
+                'footer.cookies': 'Cookies',
+                'footer.copyright': '© 2027 Aura Cafe · Hergestellt in Berlin-Mitte'
+            },
+            
+            ru: {
+                'nav.collection': 'Коллекция',
+                'nav.menu': 'Меню',
+                'nav.locations': 'Локации',
+                'nav.process': 'Процесс',
+                'nav.reserve': 'Бронь',
+                
+                'hero.label': 'Основано 2026 · Берлин-Митте',
+                'hero.title': ['Искусство', '<em>идеального</em>', 'кофе'],
+                'hero.subtitle': 'Там, где немецкая точность встречается с ремесленным мастерством. Сенсорное путешествие через моносорта, обжаренные в сердце Берлина.',
+                'hero.cta': 'Открыть коллекцию',
+                'hero.scroll': 'Листайте',
+                
+                'product.label': 'Signature серия',
+                'product.title': 'Создано для<br><em>ценителей</em>',
+                'product.description': 'Каждое зерно тщательно отобрано на моноплантациях, обжарено малыми партиями и приготовлено с точностью, чтящей традиции и инновации.',
+                'product.feature1': 'Моносорта из Эфиопии и Колумбии',
+                'product.feature2': 'Обжарка малыми партиями в течение 48 часов',
+                'product.feature3': 'Экологически ответственное производство и сертифицированная прямая торговля',
+                'product.cta': 'Узнать процесс',
+                'product.badge': 'Лимитированная серия',
+                'product.origin': 'Эфиопия · Иргачеффе',
+                'product.name': 'Aura Reserve',
+                
+                'menu.label': 'Меню',
+                'menu.title': 'Изысканная <em>коллекция</em>',
+                'menu.subtitle': 'Утончённая коллекция авторских напитков и выпечки, каждое создано, чтобы раскрыть уникальный характер своего происхождения.',
+                'menu.cat.signature': 'Авторские',
+                'menu.cat.coffee': 'Кофе',
+                'menu.cat.ceremony': 'Церемония',
+                'menu.cat.pastry': 'Выпечка',
+                
+                'locations.label': 'Наши пространства',
+                'locations.title': 'Берлин-Митте <em>Коллекция</em>',
+                'locations.subtitle': 'Шесть тщательно подобранных пространств в самых знаковых районах Берлина. Каждое — уникальное выражение нашего ремесла.',
+                'locations.flagship.label': 'Флагман',
+                'locations.flagship.title': 'Hauptstraße',
+                'locations.flagship.description': 'Наша оригинальная локация с открытой обжаркой и лабораторией бариста. Сердце Aura Cafe с 2027 года.',
+                'locations.rosenthaler.label': 'Розенталер',
+                'locations.rosenthaler.title': 'The Corner',
+                'locations.rosenthaler.description': 'Уютное место в районе с летней террасой.',
+                'locations.hackescher.label': 'Хакешер',
+                'locations.hackescher.title': 'The Lab',
+                'locations.hackescher.description': 'Экспериментальные методы заваривания и дегустационный зал.',
+                'locations.museum.label': 'Музейный остров',
+                'locations.museum.title': 'Cultural Quarter',
+                'locations.museum.description': 'Поп-ап у Пергамского музея. Там, где искусство встречает аромат.',
+                'locations.prenzlauer.label': 'Пренцлауэр Берг',
+                'locations.prenzlauer.title': 'Morning Light',
+                'locations.prenzlauer.description': 'Завтраки весь день и спешелти кофе.',
+                'locations.friedrichshain.label': 'Фридрихсхайн',
+                'locations.friedrichshain.title': 'Evening Brew',
+                'locations.friedrichshain.description': 'Ночной кофе и винный бар.',
+                
+                'brewing.label': 'Наш метод',
+                'brewing.title': 'Процесс <em>приготовления</em>',
+                'brewing.subtitle': 'Три акта точности. От зерна до чашки каждый момент оркестрирован с заботой симфонии.',
+                'brewing.step1.title': 'Отбор',
+                'brewing.step1.description': 'Вручную собранные зёрна с высокогорных плантаций, отсортированные для совершенства и прослеживаемости.',
+                'brewing.step2.title': 'Обжарка',
+                'brewing.step2.description': 'Обжарка малыми партиями на нашей берлинской фабрике, профилированная для раскрытия уникального характера каждого происхождения.',
+                'brewing.step3.title': 'Экстракция',
+                'brewing.step3.description': 'Точное заваривание при 93°C, 9 бар давления, 25-30 секунд экстракции для оптимального вкуса.',
+                
+                'reservation.label': 'Забронировать столик',
+                'reservation.title': 'Вечер <em>ждёт вас</em>',
+                'reservation.subtitle': 'Забронируйте место в нашем флагмане. Частные дегустации и кураторские впечатления по запросу.',
+                'reservation.name': 'Полное имя',
+                'reservation.name.placeholder': 'Ваше имя',
+                'reservation.email': 'Email',
+                'reservation.email.placeholder': 'ваш@email.com',
+                'reservation.date': 'Дата',
+                'reservation.time': 'Время',
+                'reservation.time.placeholder': 'Выберите время',
+                'reservation.guests': 'Гости',
+                'reservation.guests.placeholder': 'Количество гостей',
+                'reservation.guests.1': '1 гость',
+                'reservation.guests.2': '2 гостя',
+                'reservation.guests.3': '3 гостя',
+                'reservation.guests.4': '4 гостя',
+                'reservation.guests.5': '5 гостей',
+                'reservation.guests.6': '6+ гостей',
+                'reservation.submit': 'Подтвердить бронь',
+                'reservation.success': 'Бронь подтверждена ✓',
+                
+                'footer.tagline': 'Искусство идеального кофе, созданное в сердце Берлин-Митте. Где каждая чашка рассказывает историю.',
+                'footer.explore': 'Узнать',
+                'footer.visit': 'Посетить',
+                'footer.hours': 'Пн-Вс · 8-22ч',
+                'footer.legal': 'Правовая информация',
+                'footer.privacy': 'Конфиденциальность',
+                'footer.terms': 'Условия',
+                'footer.imprint': 'Выходные данные',
+                'footer.cookies': 'Cookies',
+                'footer.copyright': '© 2027 Aura Cafe · Создано в Берлин-Митте'
+            }
+        };
+
+        /**
+         * ==========================================
+         * MENU DATA - Realistic Specialty Items
+         * Premium Euro (€) Pricing across DE / EN / RU
+         * ==========================================
+         */
+        const menuData = {
+            signature: [
+                {
+                    name: { 
+                        en: 'Signature Aura Latte', 
+                        de: 'Signature Aura Latte', 
+                        ru: 'Авторский Аура Латте' 
+                    },
+                    price: '7.50',
+                    notes: {
+                        en: 'Vanilla bean, gold dust, oat milk, cardamom whisper',
+                        de: 'Vanilleschote, Goldstaub, Hafermilch, Kardamomnote',
+                        ru: 'Ваниль, золотая пыль, овсяное молоко, нотка кардамона'
+                    },
+                    tag: { en: 'Signature', de: 'Авторский', ru: 'Авторский' }
+                }
+            ],
+            coffee: [
+                {
+                    name: { 
+                        en: 'Espresso', 
+                        de: 'Espresso', 
+                        ru: 'Эспрессо' 
+                    },
+                    price: '3.50',
+                    notes: {
+                        en: 'Double shot · dark chocolate, caramel, hazelnut',
+                        de: 'Doppelter Shot · dunkle Schokolade, Karamell, Haselnuss',
+                        ru: 'Двойной · тёмный шоколад, карамель, фундук'
+                    },
+                    tag: { en: 'Classic', de: 'Klassiker', ru: 'Классика' }
+                },
+                {
+                    name: { 
+                        en: 'Flat White', 
+                        de: 'Flat White', 
+                        ru: 'Флэт Уайт' 
+                    },
+                    price: '4.80',
+                    notes: {
+                        en: 'Velvety microfoam, balanced espresso, smooth finish',
+                        de: 'Samtige Mikroschaum, ausgewogener Espresso, sanfter Abgang',
+                        ru: 'Бархатная микропена, сбалансированный эспрессо, мягкое послевкусие'
+                    },
+                    tag: { en: 'House', de: 'Haus', ru: 'Дом' }
+                },
+                {
+                    name: { 
+                        en: 'Filter Coffee (V60 Batch Brew)', 
+                        de: 'Filterkaffee (V60 Batch Brew)', 
+                        ru: 'Фильтр-кофе (V60 Batch Brew)' 
+                    },
+                    price: '4.50',
+                    notes: {
+                        en: 'Hand-poured · bright acidity, floral notes, clean finish',
+                        de: 'Handgebrüht · helle Säure, florale Noten, klarer Abgang',
+                        ru: 'Ручное заваривание · яркая кислотность, цветочные ноты, чистое послевкусие'
+                    },
+                    tag: { en: 'Pour-over', de: 'Handgebrüht', ru: 'Ручное' }
+                }
+            ],
+            ceremony: [
+                {
+                    name: { 
+                        en: 'Organic Matcha Latte', 
+                        de: 'Bio Matcha Latte', 
+                        ru: 'Органический матча латте' 
+                    },
+                    price: '5.50',
+                    notes: {
+                        en: 'Ceremonial grade · umami, grass, silk, oat milk',
+                        de: 'Zeremonieller Grad · Umami, Gras, Seide, Hafermilch',
+                        ru: 'Церемониальный · умами, трава, шёлк, овсяное молоко'
+                    },
+                    tag: { en: 'Ceremony', de: 'Zeremonie', ru: 'Церемония' }
+                },
+                {
+                    name: { 
+                        en: 'Ritual of Life Latte', 
+                        de: 'Ritual des Lebens Latte', 
+                        ru: 'Ритуал Жизни Латте' 
+                    },
+                    price: '6.00',
+                    notes: {
+                        en: 'Roasted hojicha, oat cream, cinnamon dust, meditative blend',
+                        de: 'Gerösteter Hojicha, Hafercreme, Zimtstaub, meditative Mischung',
+                        ru: 'Обжаренный ходзитя, овсяные сливки, корица, медитативный бленд'
+                    },
+                    tag: { en: 'Ritual', de: 'Ritual', ru: 'Ритуал' }
+                }
+            ],
+            pastry: [
+                {
+                    name: { 
+                        en: 'Premium Croissant with Almonds', 
+                        de: 'Premium Croissant mit Mandeln', 
+                        ru: 'Премиум круассан с миндалём' 
+                    },
+                    price: '4.50',
+                    notes: {
+                        en: 'French butter, toasted almonds, flaky layers',
+                        de: 'Französische Butter, geröstete Mandeln, blättrige Schichten',
+                        ru: 'Французское масло, жареный миндаль, слоёное тесто'
+                    },
+                    tag: { en: 'Pastry', de: 'Gebäck', ru: 'Выпечка' }
+                }
+            ]
+        };
+
+        /**
+         * ==========================================
+         * PREMIUM SOUND ENGINE
+         * Deep, muted tactile "thud" - 3 layered synthesis
+         * ==========================================
+         */
+        class PremiumSoundEngine {
+            constructor() {
+                this.audioContext = null;
+                this.initialized = false;
+                this.volume = 0.5;
+                this.init();
+            }
+
+            init() {
+                const initAudio = () => {
+                    if (!this.initialized) {
+                        try {
+                            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            this.initialized = true;
+                        } catch (e) {
+                            console.warn('Web Audio API not supported');
+                        }
+                    }
+                };
+
+                document.addEventListener('click', initAudio, { once: true, passive: true });
+                document.addEventListener('touchstart', initAudio, { once: true, passive: true });
+                document.addEventListener('keydown', initAudio, { once: true });
+            }
+
+            playClick() {
+                if (!this.audioContext) return;
+
+                const now = this.audioContext.currentTime;
+                const masterGain = this.audioContext.createGain();
+                masterGain.gain.value = this.volume;
+                masterGain.connect(this.audioContext.destination);
+
+                // Layer 1: Sub-bass (60Hz)
+                const subOsc = this.audioContext.createOscillator();
+                const subGain = this.audioContext.createGain();
+                subOsc.type = 'sine';
+                subOsc.frequency.setValueAtTime(60, now);
+                subOsc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+                subGain.gain.setValueAtTime(0, now);
+                subGain.gain.linearRampToValueAtTime(0.25, now + 0.005);
+                subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                subOsc.connect(subGain);
+                subGain.connect(masterGain);
+                subOsc.start(now);
+                subOsc.stop(now + 0.15);
+
+                // Layer 2: Mid thud (180Hz)
+                const midOsc = this.audioContext.createOscillator();
+                const midGain = this.audioContext.createGain();
+                midOsc.type = 'sine';
+                midOsc.frequency.setValueAtTime(180, now);
+                midOsc.frequency.exponentialRampToValueAtTime(90, now + 0.12);
+                midGain.gain.setValueAtTime(0, now);
+                midGain.gain.linearRampToValueAtTime(0.35, now + 0.003);
+                midGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                midOsc.connect(midGain);
+                midGain.connect(masterGain);
+                midOsc.start(now);
+                midOsc.stop(now + 0.12);
+
+                // Layer 3: High transient (filtered noise)
+                const noiseBuffer = this.createNoiseBuffer(0.05);
+                const noiseSource = this.audioContext.createBufferSource();
+                const noiseFilter = this.audioContext.createBiquadFilter();
+                const noiseGain = this.audioContext.createGain();
+                
+                noiseSource.buffer = noiseBuffer;
+                noiseFilter.type = 'bandpass';
+                noiseFilter.frequency.value = 800;
+                noiseFilter.Q.value = 2;
+                
+                noiseGain.gain.setValueAtTime(0, now);
+                noiseGain.gain.linearRampToValueAtTime(0.15, now + 0.002);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                
+                noiseSource.connect(noiseFilter);
+                noiseFilter.connect(noiseGain);
+                noiseGain.connect(masterGain);
+                noiseSource.start(now);
+                noiseSource.stop(now + 0.05);
+            }
+
+            createNoiseBuffer(duration) {
+                const bufferSize = Math.floor(this.audioContext.sampleRate * duration);
+                const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+                const output = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+                return buffer;
+            }
+        }
+
+        const soundEngine = new PremiumSoundEngine();
+
+        /**
+         * ==========================================
+         * INTERNATIONALIZATION (i18n) MANAGER
+         * ==========================================
+         */
+        class I18nManager {
+            constructor() {
+                this.currentLang = localStorage.getItem('aura-lang') || 'en';
+                this.init();
+            }
+
+            init() {
+                this.applyLanguage(this.currentLang, false);
+                
+                document.querySelectorAll('.lang-switcher__btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const lang = btn.dataset.lang;
+                        if (lang !== this.currentLang) {
+                            this.applyLanguage(lang, true);
+                        }
+                    });
+                });
+            }
+
+            applyLanguage(lang, withSound = true) {
+                this.currentLang = lang;
+                localStorage.setItem('aura-lang', lang);
+                document.documentElement.lang = lang;
+
+                if (withSound) {
+                    soundEngine.playClick();
+                }
+
+                const fadeElements = document.querySelectorAll('.i18n-fade, [data-i18n], [data-i18n-html], [data-i18n-placeholder]');
+                fadeElements.forEach(el => el.classList.add('fading'));
+
+                setTimeout(() => {
+                    document.querySelectorAll('[data-i18n]').forEach(el => {
+                        const key = el.getAttribute('data-i18n');
+                        const value = this.getValue(key);
+                        if (value !== null) {
+                            el.textContent = value;
+                        }
+                    });
+
+                    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                        const key = el.getAttribute('data-i18n-html');
+                        const value = this.getValue(key);
+                        if (value !== null) {
+                            el.innerHTML = value;
+                        }
+                    });
+
+                    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                        const key = el.getAttribute('data-i18n-placeholder');
+                        const value = this.getValue(key);
+                        if (value !== null) {
+                            el.placeholder = value;
+                        }
+                    });
+
+                    this.renderHeroTitle();
+                    this.renderMenu();
+
+                    document.querySelectorAll('.lang-switcher__btn').forEach(btn => {
+                        btn.classList.toggle('active', btn.dataset.lang === lang);
+                    });
+
+                    fadeElements.forEach(el => el.classList.remove('fading'));
+                }, 300);
+            }
+
+            getValue(key) {
+                return translations[this.currentLang]?.[key] ?? translations['en']?.[key] ?? null;
+            }
+
+            renderHeroTitle() {
+                const heroTitle = document.getElementById('heroTitle');
+                if (!heroTitle) return;
+                
+                const words = this.getValue('hero.title');
+                if (!Array.isArray(words)) return;
+                
+                heroTitle.innerHTML = words.map((word, i) => 
+                    `<span class="word"><span>${word}</span></span>`
+                ).join('');
+                
+                heroTitle.querySelectorAll('.word span').forEach((span, i) => {
+                    span.style.animation = 'none';
+                    span.offsetHeight;
+                    span.style.animation = `wordReveal 1.2s var(--ease-out-expo) ${0.5 + i * 0.15}s forwards`;
+                });
+            }
+
+            renderMenu() {
+                const menuGrid = document.getElementById('menuGrid');
+                if (!menuGrid) return;
+                
+                const activeCategory = document.querySelector('.menu__category.active')?.dataset.category || 'signature';
+                const items = menuData[activeCategory] || [];
+                const lang = this.currentLang;
+
+                menuGrid.innerHTML = items.map(item => `
+                    <article class="menu__item">
+                        <div class="menu__item-header">
+                            <h3 class="menu__item-name">${item.name[lang] || item.name.en}</h3>
+                            <div class="menu__item-price">
+                                <span class="currency">€</span>
+                                <span class="amount">${item.price}</span>
+                            </div>
+                        </div>
+                        <p class="menu__item-notes">${item.notes[lang] || item.notes.en}</p>
+                        ${item.tag ? `<span class="menu__item-tag">${item.tag[lang] || item.tag.en}</span>` : ''}
+                    </article>
+                `).join('');
+            }
+        }
+
+        const i18n = new I18nManager();
+
+        /**
+         * ==========================================
+         * MENU CATEGORY TABS
+         * ==========================================
+         */
+        document.querySelectorAll('.menu__category').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.menu__category').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                soundEngine.playClick();
+                i18n.renderMenu();
+            });
+        });
+
+        /**
+         * ==========================================
+         * 3D TILT EFFECT (Desktop Only)
+         * ==========================================
+         */
+        class TiltEffect {
+            constructor(element, container, glare) {
+                this.element = element;
+                this.container = container;
+                this.glare = glare;
+                this.isEnabled = this.canEnable();
+                this.maxTilt = 12;
+                this.scale = 1.03;
+                this.targetX = 0;
+                this.targetY = 0;
+                this.currentX = 0;
+                this.currentY = 0;
+                this.rafId = null;
+                
+                if (this.isEnabled) {
+                    this.init();
+                } else {
+                    this.element.style.transform = '';
+                }
+            }
+
+            canEnable() {
+                if (window.matchMedia('(hover: none)').matches) return false;
+                if (window.matchMedia('(pointer: coarse)').matches) return false;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+                if (window.innerWidth < 1024) return false;
+                return true;
+            }
+
+            init() {
+                this.boundMouseMove = this.handleMouseMove.bind(this);
+                this.boundMouseLeave = this.handleMouseLeave.bind(this);
+                this.boundAnimate = this.animate.bind(this);
+                
+                this.container.addEventListener('mousemove', this.boundMouseMove, { passive: true });
+                this.container.addEventListener('mouseleave', this.boundMouseLeave);
+                this.animate();
+            }
+
+            handleMouseMove(e) {
+                const rect = this.container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                this.targetY = ((x - centerX) / centerX) * this.maxTilt;
+                this.targetX = ((y - centerY) / centerY) * -this.maxTilt;
+
+                if (this.glare) {
+                    const glareX = (x / rect.width) * 100;
+                    const glareY = (y / rect.height) * 100;
+                    this.glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.2) 0%, transparent 50%)`;
+                }
+            }
+
+            handleMouseLeave() {
+                this.targetX = 0;
+                this.targetY = 0;
+                if (this.glare) {
+                    this.glare.style.background = '';
+                }
+            }
+
+            animate() {
+                this.currentX += (this.targetX - this.currentX) * 0.1;
+                this.currentY += (this.targetY - this.currentY) * 0.1;
+
+                this.element.style.transform = `
+                    perspective(1500px)
+                    rotateX(${this.currentX.toFixed(2)}deg)
+                    rotateY(${this.currentY.toFixed(2)}deg)
+                    scale3d(${this.scale}, ${this.scale}, ${this.scale})
+                `;
+
+                this.rafId = requestAnimationFrame(this.boundAnimate);
+            }
+
+            destroy() {
+                if (this.rafId) cancelAnimationFrame(this.rafId);
+                this.container.removeEventListener('mousemove', this.boundMouseMove);
+                this.container.removeEventListener('mouseleave', this.boundMouseLeave);
+            }
+        }
+
+        const tiltContainer = document.getElementById('tiltContainer');
+        const productCard = document.getElementById('productCard');
+        const productGlare = document.getElementById('productGlare');
+        let tiltEffect = null;
+        
+        if (tiltContainer && productCard) {
+            tiltEffect = new TiltEffect(productCard, tiltContainer, productGlare);
+        }
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (tiltEffect) tiltEffect.destroy();
+                if (tiltContainer && productCard) {
+                    tiltEffect = new TiltEffect(productCard, tiltContainer, productGlare);
+                }
+            }, 250);
+        }, { passive: true });
+
+        /**
+         * ==========================================
+         * LOADING SCREEN
+         * ==========================================
+         */
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                document.getElementById('hero').classList.add('in-view');
+            }, 1500);
+        });
+
+        if (document.readyState === 'complete') {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                if (loader && !loader.classList.contains('hidden')) {
+                    loader.classList.add('hidden');
+                    document.getElementById('hero').classList.add('in-view');
+                }
+            }, 1500);
+        }
+
+        /**
+         * ==========================================
+         * SCROLL PROGRESS
+         * ==========================================
+         */
+        const scrollProgress = document.getElementById('scrollProgress');
+        function updateScrollProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            scrollProgress.style.width = progress + '%';
+        }
+
+        /**
+         * ==========================================
+         * NAVIGATION
+         * ==========================================
+         */
+        const nav = document.getElementById('nav');
+        const navToggle = document.getElementById('navToggle');
+        const navCenter = document.getElementById('navCenter');
+
+        function handleScroll() {
+            if (window.scrollY > 80) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            updateScrollProgress();
+        }
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        navToggle.addEventListener('click', () => {
+            const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', !isExpanded);
+            navToggle.classList.toggle('active');
+            navCenter.classList.toggle('active');
+            soundEngine.playClick();
+        });
+
+        navCenter.querySelectorAll('.nav__link').forEach(link => {
+            link.addEventListener('click', () => {
+                navCenter.classList.remove('active');
+                navToggle.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        /**
+         * ==========================================
+         * CUSTOM CURSOR (Desktop only)
+         * ==========================================
+         */
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorRing = document.getElementById('cursorRing');
+        let cursorX = 0, cursorY = 0;
+        let ringX = 0, ringY = 0;
+
+        if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+            document.addEventListener('mousemove', (e) => {
+                cursorX = e.clientX;
+                cursorY = e.clientY;
+                cursorDot.style.left = cursorX + 'px';
+                cursorDot.style.top = cursorY + 'px';
+            }, { passive: true });
+
+            function animateCursor() {
+                ringX += (cursorX - ringX) * 0.15;
+                ringY += (cursorY - ringY) * 0.15;
+                cursorRing.style.left = ringX + 'px';
+                cursorRing.style.top = ringY + 'px';
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+
+            const hoverTargets = document.querySelectorAll('a, button, .bento-item, .product-card, .brewing-step, .menu__item');
+            hoverTargets.forEach(target => {
+                target.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+                target.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+            });
+        }
+
+        /**
+         * ==========================================
+         * SOUND HANDLERS
+         * ==========================================
+         */
+        document.querySelectorAll('.btn-sound').forEach(button => {
+            button.addEventListener('click', () => {
+                soundEngine.playClick();
+            });
+        });
+
+        /**
+         * ==========================================
+         * INTERSECTION OBSERVER - Scroll Reveal
+         * ==========================================
+         */
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            rootMargin: '0px 0px -100px 0px',
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        /**
+         * ==========================================
+         * SMOOTH SCROLL
+         * ==========================================
+         */
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    const offset = 80;
+                    const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        document.querySelectorAll('[data-scroll-target]').forEach(button => {
+            button.addEventListener('click', () => {
+                const target = document.getElementById(button.dataset.scrollTarget);
+                if (target) {
+                    const offset = 80;
+                    const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+
+        /**
+         * ==========================================
+         * RESERVATION FORM
+         * ==========================================
+         */
+        const reservationForm = document.getElementById('reservationForm');
+        if (reservationForm) {
+            reservationForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                soundEngine.playClick();
+                
+                const submitBtn = reservationForm.querySelector('.reservation__submit span');
+                const originalText = submitBtn.textContent;
+                const successText = i18n.getValue('reservation.success') || 'Reservation Confirmed ✓';
+                submitBtn.textContent = successText;
+                
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    reservationForm.reset();
+                }, 3000);
+            });
+        }
+
+        /**
+         * ==========================================
+         * KEYBOARD NAVIGATION
+         * ==========================================
+         */
+        document.querySelectorAll('.bento-item[role="button"]').forEach(item => {
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    soundEngine.playClick();
+                    item.click();
+                }
+            });
+        });
+
+        /**
+         * ==========================================
+         * PRELOAD CRITICAL IMAGES
+         * ==========================================
+         */
+        const criticalImages = [
+            'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=1920&q=85',
+            'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=85'
+        ];
+        criticalImages.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+
+        /**
+         * ==========================================
+         * INITIALIZATION LOG
+         * ==========================================
+         */
+        console.log('%c AURA CAFE ', 'background: #c9a962; color: #0a0a0a; font-size: 16px; font-weight: bold; padding: 6px 12px; font-family: Georgia, serif; font-style: italic;');
+        console.log('%c Premium Coffee Experience · Berlin-Mitte · 2027 ', 'color: #a8a8a8; font-size: 11px; letter-spacing: 0.1em;');
+        console.log('%c Multi-language: DE · EN · RU ', 'color: #c9a962; font-size: 10px; letter-spacing: 0.15em;');
+    </script>
+</body>
+</html>
